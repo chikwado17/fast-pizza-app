@@ -1,9 +1,32 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { formatCurrency } from '../../utils/helpers';
+import { addItem, getCurrentQuantityById } from '../cart/cartSlice';
+import DeleteItem from '../cart/DeleteItem';
+import UpdateCartQuantity from '../cart/UpdateCartQuantity';
+// import { useNavigate } from 'react-router-dom';
 
 function MenuItem({ pizza }) {
-  const { name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  // const navigate = useNavigate();
 
-  console.log(pizza);
+  //getting the currentItem in the cart
+  const currentCartQuantity = useSelector(getCurrentQuantityById(id));
+  const isInCart = currentCartQuantity > 0;
+
+  const dispatch = useDispatch();
+
+  const addItemToCart = () => {
+    const newItem = {
+      pizzaId: id,
+      name,
+      quantity: 1,
+      unitPrice,
+      totalPrice: unitPrice * 1,
+    };
+
+    dispatch(addItem(newItem));
+    // navigate('/cart');
+  };
 
   return (
     <li className="flex gap-4 py-2">
@@ -28,9 +51,21 @@ function MenuItem({ pizza }) {
             </p>
           )}
 
-          <button className="inline-block rounded-full bg-yellow-400 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 focus:ring-offset-2 disabled:cursor-not-allowed md:px-5 md:py-2.5">
-            Add to cart
-          </button>
+          {isInCart && (
+            <div className="flex items-center gap-3 sm:gap-8">
+              <UpdateCartQuantity pizzaId={id} />
+              <DeleteItem pizzaId={id} />
+            </div>
+          )}
+
+          {!soldOut && !isInCart && (
+            <button
+              onClick={addItemToCart}
+              className="inline-block rounded-full bg-yellow-400 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 focus:ring-offset-2 disabled:cursor-not-allowed md:px-5 md:py-2.5"
+            >
+              Add to cart
+            </button>
+          )}
         </div>
       </div>
     </li>

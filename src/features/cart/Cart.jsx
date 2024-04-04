@@ -1,36 +1,40 @@
 import { Link } from 'react-router-dom';
 import LinkButton from '../../ui/LinkButton';
 import CartItem from './CartItem';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import EmptyCart from './EmptyCart';
+import { clearCart } from './cartSlice';
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: 'Mediterranean',
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: 'Vegetale',
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: 'Spinach and Mushroom',
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+// const fakeCart = [
+//   {
+//     pizzaId: 12,
+//     name: 'Mediterranean',
+//     quantity: 2,
+//     unitPrice: 16,
+//     totalPrice: 32,
+//   },
+//   {
+//     pizzaId: 6,
+//     name: 'Vegetale',
+//     quantity: 1,
+//     unitPrice: 13,
+//     totalPrice: 13,
+//   },
+//   {
+//     pizzaId: 11,
+//     name: 'Spinach and Mushroom',
+//     quantity: 1,
+//     unitPrice: 15,
+//     totalPrice: 15,
+//   },
+// ];
 
 function Cart() {
-  const cart = fakeCart;
-
+  const cart = useSelector((state) => state.carts.cart);
+  const dispatch = useDispatch();
   const username = useSelector((state) => state.user.userName);
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-3 py-3">
@@ -51,7 +55,10 @@ function Cart() {
         >
           Order pizzas
         </Link>
-        <button className="inline-block rounded-full border-2 border-stone-300 bg-transparent px-4 py-2.5 font-semibold uppercase tracking-wide text-stone-400 transition-colors duration-300 hover:bg-stone-300 hover:text-stone-800 focus:outline-none focus:ring focus:ring-stone-200 focus:ring-offset-2 disabled:cursor-not-allowed md:px-6 md:py-3.5">
+        <button
+          onClick={() => dispatch(clearCart())}
+          className="inline-block rounded-full border-2 border-stone-300 bg-transparent px-4 py-2.5 font-semibold uppercase tracking-wide text-stone-400 transition-colors duration-300 hover:bg-stone-300 hover:text-stone-800 focus:outline-none focus:ring focus:ring-stone-200 focus:ring-offset-2 disabled:cursor-not-allowed md:px-6 md:py-3.5"
+        >
           Clear cart
         </button>
       </div>
